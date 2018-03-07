@@ -2,21 +2,24 @@ module.exports = function count(s, pairs) {
   // your implementation
   var totalSimpleMultiplier = 1;
   var simpleGCD = [];
+  var gcdTemp = 0;
   var totalN = 1;
   var result = 0;
   debugger;
   for (var i = 0; i < pairs.length; i++) {
     totalSimpleMultiplier *= pairs[i][0];
-    totalN *= (pairs[i][1] == 1) ? 1 : splitter(pairs[i][0], pairs[i][1] - 1);
+    totalN *= (pairs[i][1] == 1) ? 1 : modularPow(pairs[i][0], pairs[i][1] - 1, 1000000007);
+    totalN = totalN % 1000000007;
   }
-  for (var i = 0; i < totalSimpleMultiplier; i++) {
-    simpleGCD.push(gcd(i + 1, totalSimpleMultiplier));
-  }
-  var ceil = Math.ceil(s.length / totalSimpleMultiplier);
-  for (var k = 0; k < totalSimpleMultiplier; k++) {
+  // for (var i = 0; i < totalSimpleMultiplier; i++) {
+  //   simpleGCD.push(gcd(i + 1, totalSimpleMultiplier));
+  // }
+  for (var k = 1; k <= totalSimpleMultiplier; k++) {
     var isCond = true;
     for (var j = 0; j < s.length; j++) {
-      if (s[j] === '0' && simpleGCD[(k + j) % totalSimpleMultiplier] === 1 || s[j] === '1' && simpleGCD[(k + j) % totalSimpleMultiplier] !== 1) {
+      // if (s[j] === '0' && simpleGCD[(k + j) % totalSimpleMultiplier] === 1 || s[j] === '1' && simpleGCD[(k + j) % totalSimpleMultiplier] !== 1) {
+      gcdTemp = gcd((k + j), totalSimpleMultiplier);
+      if (s[j] === '0' && gcdTemp === 1 || s[j] === '1' && gcdTemp !== 1) {
         isCond = false;
         break;
       }
@@ -50,9 +53,31 @@ function gcd(a, b) {
   return a << p; // Odd-Common-Divisor * 2^p
 };
 
-function splitter(base, exponenta) {
-  var temp = 0;
-  while (exponenta) {
-    temp *= Math.pow(base, exponenta)
+function modularPow(base, exp, mod) {
+  mod = parseInt(mod);
+  s = 1; v = exp; c = base;
+  while (v != 0) {
+    flag = 0;
+    if (v % 2 == 1) {
+      if (!mod)
+        s = s * c;
+      else
+        s = (s * c) % mod;
+      v = (v - 1) / 2;
+      if (!mod)
+        c = c * c;
+      else
+        c = (c * c) % mod;
+      flag = 1;
+    }
+    else {
+      v = v / 2;
+    }
+    if (!flag)
+      if (!mod)
+        c = c * c;
+      else
+        c = (c * c) % mod;
   }
+  return s;
 }

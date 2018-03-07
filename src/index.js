@@ -7,7 +7,7 @@ module.exports = function count(s, pairs) {
   debugger;
   for (var i = 0; i < pairs.length; i++) {
     totalSimpleMultiplier *= pairs[i][0];
-    totalN *= (pairs[i][1] == 1) ? 1 : Math.pow(pairs[i][0], pairs[i][1] - 1);
+    totalN *= (pairs[i][1] == 1) ? 1 : splitter(pairs[i][0], pairs[i][1] - 1);
   }
   for (var i = 0; i < totalSimpleMultiplier; i++) {
     simpleGCD.push(gcd(i + 1, totalSimpleMultiplier));
@@ -49,3 +49,10 @@ function gcd(a, b) {
   }
   return a << p; // Odd-Common-Divisor * 2^p
 };
+
+function splitter(base, exponenta) {
+  var temp = 0;
+  while (exponenta) {
+    temp *= Math.pow(base, exponenta)
+  }
+}

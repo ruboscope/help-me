@@ -1,5 +1,5 @@
 module.exports = function count(s, pairs) {
-  if (pairs.length > 8) {
+  if (pairs.length > 7) {
     return NaN;
   }
   // your implementation

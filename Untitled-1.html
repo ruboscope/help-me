@@ -9,25 +9,23 @@
 <body>
   <script>
   function count(s, pairs) {
+      if (pairs.length > 7) {
+        return NaN;
+      }
       // your implementation
       var totalSimpleMultiplier = 1;
-      var simpleGCD = [];
       var gcdTemp = 0;
       var totalN = 1;
       var result = 0;
       debugger;
       for (var i = 0; i < pairs.length; i++) {
         totalSimpleMultiplier *= pairs[i][0];
-        totalN *= (pairs[i][1] == 1) ? 1 : modularPow(pairs[i][0], pairs[i][1]-1, 1000000007);
+        totalN *= (pairs[i][1] == 1) ? 1 : modularPow(pairs[i][0], pairs[i][1] - 1, 1000000007);
         totalN = totalN % 1000000007;
       }
-      // for (var i = 0; i < totalSimpleMultiplier; i++) {
-      //   simpleGCD.push(gcd(i + 1, totalSimpleMultiplier));
-      // }
-      for (var k = 0; k <= totalSimpleMultiplier; k++) {
+      for (var k = 1; k <= totalSimpleMultiplier; k++) {
         var isCond = true;
         for (var j = 0; j < s.length; j++) {
-          // if (s[j] === '0' && simpleGCD[(k + j) % totalSimpleMultiplier] === 1 || s[j] === '1' && simpleGCD[(k + j) % totalSimpleMultiplier] !== 1) {
           gcdTemp = gcd((k + j), totalSimpleMultiplier);
           if (s[j] === '0' && gcdTemp === 1 || s[j] === '1' && gcdTemp !== 1) {
             isCond = false;
@@ -43,62 +41,37 @@
     }
 
     // gcd alghorithm
-    function gcd(a, b) {
-      // fast GCD aka Binary GCD
-      if (a === 0) return b;
-      if (b === 0) return a;
-      if (a === b) return a;
-      // remove even divisors
-      var sa = 0;
-      while (!(a & 1)) sa++ , a >>= 1;
-      var sb = 0;
-      while (!(b & 1)) sb++ , b >>= 1;
-      var p = sa < sb ? sa : sb; // Power part of 2^p Common Divisor
-      // euclidean algorithm: limited only odd numbers
-      while (a !== b) {// both a and b should be odd
-        if (b > a) { var t = a; a = b; b = t; } // swap as a > b
-        a -= b; // a is even because of odd - odd
-        do a >>= 1; while (!(a & 1)); // a become odd
+    gcd = function (n, m) {
+      var r = 0;
+      while (n !== 0) {
+        r = m % n;
+        m = n;
+        n = r;
       }
-      return a << p; // Odd-Common-Divisor * 2^p
+      return m;
     };
 
-    function modularPow(base, exp, mod) {
-      mod = parseInt(mod);
-      let temp = 1;
-      let v = exp;
-      let c = base;
-      while (v != 0) {
-        flag = 0;
-        if (v % 2 == 1) {
-          if (!mod)
-            temp = temp * c;
-          else
-            temp = (temp * c) % mod;
-          v = (v - 1) / 2;
-          if (!mod)
-            c = c * c;
-          else
-            c = (c * c) % mod;
-          flag = 1;
+
+    function modularPow(a, b, n) {
+      a = a % n;
+      var result = 1;
+      var x = a;
+
+      while (b > 0) {
+        var leastSignificantBit = b % 2;
+        b = Math.floor(b / 2);
+
+        if (leastSignificantBit == 1) {
+          result = result * x;
+          result = result % n;
         }
-        else {
-          v = v / 2;
-        }
-        if (!flag)
-          if (!mod)
-            c = c * c;
-          else
-            c = (c * c) % mod;
+
+        x = x * x;
+        x = x % n;
       }
-      return temp;
-    }
-    var result = count('101', [
-        [2, 1],
-        [3, 1],
-        [5, 1],
-        [7, 1]
-      ]);
+      return result;
+    };
+    var result = count('1011', [[5, 1], [7, 1]]);
   </script>
 </body>
 </html>

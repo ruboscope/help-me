@@ -1,45 +1,36 @@
-module.exports = module.exports = function count(s, pairs) {
-  if (pairs.length > 7 && s.length > 1) {
-    return NaN;
-  }
+module.exports = function count(s, pairs) {
   // your implementation
   var totalSimpleMultiplier = 1;
   var gcdTemp = 0;
   var totalN = 1;
   var result = 1;
 
+  var countOne = 0;
+  var countZero = 0;
+  /*another solution*/
+  for (var i = 0; i < s.length; i++) {
+    if (s[i] == '1') {
+      countOne++;
+    }
+  }
+  countZero = s.length - countOne;
+  var tempCount = 0;
+  var tempN = 0;
+  var evalStr = '';
 
-  /* solution throught gcd*/
-  debugger;
   for (var i = 0; i < pairs.length; i++) {
-    result = multiply(result, (pairs[i][0] - 1));
+    result = multiply(result, (pairs[i][0] - countOne));
     totalSimpleMultiplier = multiply(totalSimpleMultiplier, pairs[i][0]);
     totalN *= (pairs[i][1] == 1) ? 1 : modularPow(pairs[i][0], pairs[i][1] - 1, 1000000007);
     totalN = totalN % 1000000007;
   }
-  if (s.length == 1) {
-    if (s[0] == '0') {
-      result = totalSimpleMultiplier - result;
+  if (countZero != 0) {
+    result = factorBase(countOne, pairs) - factorBase(countOne + 1, pairs);
+    for (var k = 1; k < countZero; k++) {
+      countOne++;
+      result = result - (factorBase(countOne, pairs) - factorBase(countOne + 1, pairs));
     }
   }
-  else {
-    result = 0;
-    for (var k = 1; k <= totalSimpleMultiplier; k++) {
-      var isCond = true;
-      for (var j = 0; j < s.length; j++) {
-        gcdTemp = gcd((k + j), totalSimpleMultiplier);
-        if (s[j] === '0' && gcdTemp === 1 || s[j] === '1' && gcdTemp !== 1) {
-          isCond = false;
-          break;
-        }
-      }
-      if (isCond) {
-        result++;
-      }
-    }
-  }
-/*end gcd solution */
-
   result *= totalN;
   return result % 1000000007;
 }
@@ -56,9 +47,27 @@ gcd = function (n, m) {
 };
 
 
+function factorBase(tempN, pairs) {
+  var tempMult = 1;
+  var sign = false;
+  for (var j = 0; j < pairs.length; j++) {
+    if (tempMult[0] == '-' || (pairs[j][0] < tempN)) {
+      sign = true;
+    }
+    if (tempMult[0] == '-' && (pairs[j][0] < tempN)) {
+      sign = false;
+    }
+    tempMult = multiply(tempMult, (pairs[j][0] - tempN));
+    if (sign) {
+      tempMult = '-' + tempMult;
+    }
+    // }
+  }
+  return tempMult;
+}
+
 function modularPow(base, exp, modular) {
   var baseMod = base % modular;
-  debugger;
   if (exp == 0) {
     return 1;
   } else if (exp % 2 == 0) {

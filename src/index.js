@@ -32,7 +32,7 @@ module.exports = function count(s, pairs) {
     }
   }
   result *= totalN;
-  return result % 1000000007;
+  return result > 0 ? result % 1000000007 : 0;
 }
 
 // gcd alghorithm
